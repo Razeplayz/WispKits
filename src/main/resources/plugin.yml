@@ -1,0 +1,16 @@
+name: WispKits
+version: 1.0.0
+main: dev.wispsmp.kits.WispKits
+api-version: '1.21'
+author: Razeplayz
+commands:
+  kit:
+    description: Open the kit menu or manage kits
+    usage: /kit [claim <name>|<name>|create <name>|edit <name>|save <name>|delete <name>|icon <name>|list]
+permissions:
+  wispkits.admin:
+    description: Create, edit, and delete kits
+    default: op
+  wispkits.claim:
+    description: Claim kits
+    default: true
