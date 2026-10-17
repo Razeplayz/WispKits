@@ -96,7 +96,13 @@ public final class WispKits extends JavaPlugin implements Listener {
     private Set<String> kitNames() { ConfigurationSection s = getConfig().getConfigurationSection("kits"); return s == null ? new TreeSet<>() : new TreeSet<>(s.getKeys(false)); }
     private boolean exists(String name) { return getConfig().isConfigurationSection("kits." + name); }
     private void saveKit(String name, ItemStack[] contents, ItemStack icon) {
-        getConfig().set("kits." + name + ".contents", Arrays.asList(contents));
+        // YAML config lists must not contain Java null entries. Empty inventory slots
+        // are stored as AIR ItemStacks so /kit create works on a normal empty inventory.
+        List<ItemStack> savedContents = new ArrayList<>(contents.length);
+        for (ItemStack item : contents) {
+            savedContents.add(item == null ? new ItemStack(Material.AIR) : item.clone());
+        }
+        getConfig().set("kits." + name + ".contents", savedContents);
         if (icon != null && !icon.getType().isAir()) getConfig().set("kits." + name + ".icon", icon.clone());
         else if (!getConfig().contains("kits." + name + ".icon")) getConfig().set("kits." + name + ".icon", new ItemStack(Material.CHEST));
         getConfig().set("kits." + name + ".display", name);
